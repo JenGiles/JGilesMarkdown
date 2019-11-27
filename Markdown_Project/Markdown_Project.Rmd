@@ -5,7 +5,7 @@ author:  Jennifer Giles
 affiliation: CSIRO Health & Biosecurity
 photo: resources/img/logo.png
   
-short_title: Optional short title
+short_title: A Brief Glimpse of R
 
 output: DSreport::project_summary
 ---
@@ -22,108 +22,92 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(gapminder)
 library(kableExtra)
+library(readxl)
 ```
 
 
 # Introduction
-Before Data School I was focused within the Molecular/Micro Laboratory space where our team investigates the effects of different diets on the gut microbiome. Spending the majority of my time developing and optimising molecular assays I have no prior background in either R or coding.
-Introduce *yourself*. What's your background? Could you code before Data School? What did your 
-daily work pattern look like before Data School? Etc. This section will be placed in 
-an introductory block at the top of the page separate from the rest of the content. Don't change the section title from "Introduction" otherwise this process won't work correctly.
+Before Data School I was focused within the Molecular/Micro Laboratory space where our team is involved in looking at the effects of different diets on the gut microbiome. Spending the majority of my time developing and optimising molecular assays I have no prior background in either R or coding.
 
 # My Project
 
 The main goal I wanted to achieve with my data was to practice the R skills I have learnt within Data School and to experience wrangling 16S Sequencing data.
 
-Rather than yourself, this is the space to introduce your **project**. What are 
-your goals, what was your data, how do you plan to work with it? Perhaps show some example data if 
-it would help.
-
-In order to build this demo poster correctly, you will also need to have installed the `tidyverse`, 
-`gapminder`, and `kableExtra` packages.
-
-## Preliminary results
-
-This section will demonstrate the different visuals you might want use to show off your 
-project. Don't feel the need to go overboard, this is supposed to give a taste of the work you are
-doing rather than being a publication ready document.
-
-To get tables formatting correctly, use `knitr::kable` to convert the table to html format. If
-you also want to have alternate row highlighting, pass the result to `kable_styling('striped')` 
-from the `kableExtra` package.
-
-**Tables**
+**Example of code used to create my Table**
 ```{r mytable, out.width='50%', echo = T}
 
 library(readxl)
 Data <- read_xlsx("../Data/VAN_Data.xlsx")
 
-knitr::kable(head(Data, n = 5), format = "html", caption = "A table of data") %>% 
+knitr::kable(head(Data, n = 5), format = "html", caption = "Section of 16S Sequencing VAN data") %>% 
   kable_styling("striped")
 ```
 
+## Preliminary results
 
-**Images from a file**
+Rather than demonstrating the results of the project, I wanted to present a glimpse of what I have learnt to do within R.
 
-![](resources/img/tidyverse.png){width=100px}
 
-**Plots from R**
-```{r standard-plot, out.width='60%', fig.align='center', fig.height= 4, fig.width=6, fig.cap="Yet another gapminder plot"}
-gapminder %>% 
-  filter(year == 1987) %>% 
-  ggplot(aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)) +
-  geom_point() +
-  scale_x_log10(labels = function(b) format(b, scientific = F)) +
-  scale_size(trans = "sqrt", guide = "none") +
-  scale_color_brewer(palette = "Set1") +
-  theme_linedraw() +
-  theme(legend.position = "bottom")
+
+
+
+
+**Example of a Plot from R**
+
+```{r Plot, out.width='60%', fig.align='center', fig.height= 4, fig.width=6, fig.cap="ggplot of Data Sample"}
+
+Data <- read_xlsx("../Data/VAN_Data.xlsx")
+VAN_rep <- Data %>% 
+  group_by(Method) %>% 
+  select(-Sample) %>% 
+  #summarise(median(Participant))
+  unite(repname, c("Participant","Replicate"))
+VAN_long <- VAN_rep %>% 
+  gather(key= Phylum, value = Count, -repname, -Method) %>% 
+  mutate(Count = log10(Count + 1))
+VAN_long %>% 
+  ggplot(aes(x= Phylum, y= Count, colour = Phylum, fill = 1000)) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(y = "Bacterial Count", title = "Comparison of Bacterial Populations Between Different Faecal Collection Methods") +
+  geom_col() +
+  facet_wrap(~Method)
+
 ```
 
-Your figure and table captions are automatically numbered and can be referenced in the text
-if needed: see eg. Table \@ref(tab:mytable) and Figure \@ref(fig:standard-plot)
+
+
 
 # My Digital Toolbox
 
-I came into Data School with essentially no coding knowledge and very little experience using data so I have learnt an incredible amount during my time within Data School. 
-What digital tools have you been using in your project? Which ones have you learned since starting 
-Data School?
+I came into Data School with essentially no coding knowledge and very little experience using data so I have learnt an incredible amount during my time within Data School. These include:
 
-You can use all the usual R markdown features in writing a project summary, including lists:
+* R - including packages for example dplyr, ggplot
 
-* R - dplyr, ggplot, ...
-* Python
-* SQL
+
+
+![](resources/img/ggplot2.png){width=100px}
+![](resources/img/tidyr.png){width=100px}
+![](resources/img/tidyverse.png){width=100px}
 
 ## Favourite tool (rmarkdown)
 
-I especially enjoyed learning rmarkdown and I found that playing with different effects within ggplot was actually a lot of fun! 
+
 
 ![](resources/img/rmarkdown.png){.pull-right width=100px} 
 
 
 
-No prizes for guessing mine:
-
 # My time went ...
 
 It really surprised me how long it took to tidy my data and just how important the initial imput of data is. In addition to this, it surprised me how versatile and powerful R can be once the data is in the correct format.  
-What parts of the project took the most time and effort? Were there any surprising challenges you
-encountered, and how did you solve them?
+
 
 # Next steps
 
-There are a vast number of ways to develop the skills I learnt at Data School. I hope to refine my coding skills to be able to perform more within R and expose myself to my packages that are available within R 
-What further steps do you wish your project could take? Or are there any new digital skills that you
-are keen to develop as a result of your involvement in the Data School?
+There are a vast number of ways to develop the skills I learnt at Data School. I hope to refine my coding skills to be able to perform more within R and expose myself to more packages that are available within R.
 
 # My Data School Experience
 
 I have really enjoyed the Data School excperience. I have really enjoyed the new challenges of learning the R coding language and being exposed to new ways of analysing data. I hope to take the new skills I have learnt during my time at Data School to make some improvements within the way we manage data.
 Data School has really changed the way I think about data and has challenge a lot of the previous methods I had to manage data. I feel that Data School has provided me with superior methods of handling and presenting data which I feel will vastly improve the way I analysis and present my data.  
-This poster is mostly about your synthesis project. However we would also like to hear about other
-parts of your Data School experience. What aspects of the program did you really enjoy? How have you
-been applying the skills you have learned in your daily work? Have you been able to transfer this 
-knowledge to your team members? Concrete examples demonstrating this would be useful here
-(meetings/talks/collaborations/new roles). Any descriptions of the personal impact the program has 
-had are welcome here as well!
+
